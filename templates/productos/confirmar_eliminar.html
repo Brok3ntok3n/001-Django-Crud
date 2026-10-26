@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block titulo %}Eliminar producto | Catálogo{% endblock %}
+
+{% block contenido %}
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="card shadow-sm border-danger">
+            <div class="card-body">
+                <h1 class="h4 mb-3">¿Qué deseas hacer con este producto?</h1>
+
+                <div class="d-flex align-items-center gap-3 mb-4">
+                    {% if producto.imagen %}
+                        <img src="{{ producto.imagen.url }}"
+                             alt="{{ producto.nombre }}"
+                             width="80" height="80"
+                             class="rounded border object-fit-cover">
+                    {% endif %}
+                    <div>
+                        <strong>{{ producto.nombre }}</strong><br>
+                        <span class="text-muted">
+                            $ {{ producto.precio|floatformat:2 }} · Stock: {{ producto.stock }}
+                        </span><br>
+                        {% if producto.activo %}
+                            <span class="badge bg-success">Activo</span>
+                        {% else %}
+                            <span class="badge bg-secondary">Inactivo</span>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <form method="post">
+                    {% csrf_token %}
+
+                    {% if producto.activo %}
+                    <div class="mb-3">
+                        <p class="small text-muted mb-2">
+                            <strong>Inactivar</strong> oculta el producto del catálogo activo,
+                            pero conserva sus datos y se puede reactivar desde Editar.
+                        </p>
+                        <button type="submit" name="accion" value="inactivar"
+                                class="btn btn-warning">
+                            Inactivar producto
+                        </button>
+                    </div>
+                    {% endif %}
+
+                    <div class="mb-4">
+                        <p class="small text-muted mb-2">
+                            <strong>Eliminar definitivamente</strong> borra el registro de la
+                            base de datos. Esta acción no se puede deshacer.
+                        </p>
+                        <button type="submit" name="accion" value="eliminar"
+                                class="btn btn-danger">
+                            Eliminar definitivamente
+                        </button>
+                    </div>
+
+                    <a href="{% url 'productos:lista' %}"
+                       class="btn btn-outline-secondary">Cancelar</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

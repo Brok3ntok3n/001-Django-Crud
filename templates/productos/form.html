@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block titulo %}{{ titulo }} | Catalógo {% endblock %}
+
+{% block contenido %}
+
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h1 class="h4 mb-4">{{ titulo }}</h1>
+
+                <form method="post" enctype="multipart/form-data" novalidate>
+                    {% csrf_token %}
+
+                    {% if form.non_field_errors %}
+                    <div class="alert alert-danger">
+                        {{ form.non_field_errors }}
+                    </div>
+                    {% endif %}
+                    
+                    {% if producto and producto.imagen %}
+                        <div class="mb-3">
+                            <p class="form-label mb-1">Imagen actual</p>
+                            <img src="{{ producto.imagen.url }}" alt="{{ producto.nombre }}"
+                            width="120" class="rounded border">
+                        </div>
+                    {% endif %}
+
+                    {% for campo in form %}
+                    <div class="mb-3 {% if campo.name == 'activo' %}form-check{% endif %}">
+                        {% if campo.name == 'activo' %}
+                        {{ campo }}
+                        <label class="form-check-label" for="{{ campo.id_for_label }}">
+                            {{ campo.label }}
+                        </label>
+                        {% else %}
+                        <label class="form-label" for="{{ campo.id_for_label }}">
+                            {{ campo.label }}
+                        </label>
+                        {{ campo }}
+                        {% endif %}
+                        
+
+                        {% if campo.help_text %}
+                        <div class="form-text">{{ campo.help_text }}</div>
+                        {% endif %}
+
+                        {% for error in campo.errors %}
+                        <div class="text-danger small">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                    {% endfor %}
+
+
+                    <div class="d-flex justify-content-end gap-2">
+                        <a href="{% url 'productos:lista' %}" class="btn btn-outline-secondary">Cancelar</a>
+                        <button type="submit" class="btn btn-primary">Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
